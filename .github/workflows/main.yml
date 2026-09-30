@@ -1,14 +1,32 @@
 name: Postman API Tests
+
 on:
   workflow_dispatch:
-  
 jobs:
   postman-tests:
     runs-on: ubuntu-latest
+    
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        
+    
+      - name: Check Postman environment
+        run: |
+          python - <<'PY'
+          import json
+
+          with open("TestEnvironment.postman_environment.json") as f:
+              data = json.load(f)
+
+          values = {v["key"\]: v.get("value", "") for v in data["values"]}
+          base_url = values.get("baseUrl", "")
+
+          print("Environment name:", data.get("name"))
+          print("baseUrl exists:", "baseUrl" in values)
+          print("baseUrl has value:", bool(base_url))
+          print("baseUrl starts with https:", base_url.startswith("https://"))
+          PY
+      
       - name: Run Postman API Tests
         uses: postmanlabs/postman-cli-action@v1
         with:
