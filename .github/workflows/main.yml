@@ -18,15 +18,18 @@ jobs:
           with open("TestEnvironment.postman_environment.json") as f:
               data = json.load(f)
 
-          values = {v["key"]: v.get("value", "") for v in data["values"]}
-          base_url = values.get("baseUrl", "")
-
           print("Environment name:", data.get("name"))
-          print("baseUrl exists:", "baseUrl" in values)
-          print("baseUrl has value:", bool(base_url))
-          print("baseUrl starts with https:", base_url.startswith("https://"))
-          PY
-      
+          print("Number of variables:", len(data.get("values", [])))
+          for item in data.get("values", []):
+            name = item.get("key") or item.get("name")
+            
+            if name == "baseUrl":
+                value = item.get("value", "")
+                print("baseUrl found: True")
+                print("baseUrl has value:", bool(value))
+                print("baseUrl starts with https:", value.startswith("https://"))
+                PY
+              
       - name: Run Postman API Tests
         uses: postmanlabs/postman-cli-action@v1
         with:
