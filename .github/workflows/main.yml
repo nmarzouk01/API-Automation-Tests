@@ -9,27 +9,26 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-    
       - name: Check Postman environment
         run: |
           python - <<'PY'
           import json
-
-          with open("TestEnvironment.postman_environment.json") as f:
-              data = json.load(f)
+        
+            with open("TestEnvironment.postman_environment.json") as f:
+                data = json.load(f)
 
           print("Environment name:", data.get("name"))
           print("Number of variables:", len(data.get("values", [])))
+
           for item in data.get("values", []):
-            name = item.get("key") or item.get("name")
-            
-            if name == "baseUrl":
-                value = item.get("value", "")
-                print("baseUrl found: True")
-                print("baseUrl has value:", bool(value))
-                print("baseUrl starts with https:", value.startswith("https://"))
-                PY
-              
+              name = item.get("key") or item.get("name")
+              if name == "baseUrl":
+                  value = item.get("value", "")
+                  print("baseUrl found: True")
+                  print("baseUrl has value:", bool(value))
+                  print("baseUrl starts with https:", value.startswith("https://"))
+            PY
+                    
       - name: Run Postman API Tests
         uses: postmanlabs/postman-cli-action@v1
         with:
