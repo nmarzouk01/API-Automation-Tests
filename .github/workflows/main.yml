@@ -18,7 +18,7 @@ jobs:
           with open("TestEnvironment.postman_environment.json") as f:
               data = json.load(f)
 
-          values = {v["key"\]: v.get("value", "") for v in data["values"]}
+          values = {v["key"]: v.get("value", "") for v in data["values"]}
           base_url = values.get("baseUrl", "")
 
           print("Environment name:", data.get("name"))
